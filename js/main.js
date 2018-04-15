@@ -102,7 +102,8 @@ function loadFiles() {
             $.ajax({url: 'js/switches.js', async: false, dataType: 'script'});
             $.ajax({url: 'js/blocks.js', async: false, dataType: 'script'});
             $.ajax({url: 'js/graphs.js', async: false, dataType: 'script'});
-	    $.ajax({url: 'js/login.js', async: false, dataType: 'script'});
+            $.ajax({url: 'js/login.js', async: false, dataType: 'script'});
+            $.ajax({url: 'js/dashticz/template.js', async: false, dataType: 'script'});
 		
 	    sessionValid();
 		

@@ -317,7 +317,7 @@ function handleObjectBlock(block, index, columndiv, width, c) {
         $(columndiv).append(loadPublicTransport(random, block, key));
     } else if (block.hasOwnProperty('currency')) {
         if (typeof(getCoin) !== 'function') $.ajax({url: 'js/coins.js', async: false, dataType: 'script'});
-        var html = '<div class="col-xs-' + width + ' transbg coins-' + block['key'] + '" data-id="coins.' + block['key'] + '"></div>';
+        var html = '<div id="coins-' + block['key'] + '" class="col-xs-' + width + ' transbg coins-' + block['key'] + '" data-id="coins.' + block['key'] + '"></div>';
         $(columndiv).append(html);
         getCoin(block);
 
