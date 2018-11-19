@@ -27,6 +27,7 @@
     },
     "misc": {
         "download": "Click here to download",
+        "enter_pincode": "Enter pin code",
         "last_update": "Viimeisin päivitys",
         "loading": "Ladataan...",
         "mediaplayer_nothing_playing": "Mitään ei toisteta tällä hetkellä",
@@ -37,7 +38,8 @@
         "spotify_back_to_playlist": "Takaisin soittolistoihin",
         "spotify_select_device": "Select device",
         "spotify_select_playlist": "Valitse soittolista",
-        "value": "Arvo"
+        "value": "Arvo",
+        "wrong_code": "Wrong pin code"
     },
     "settings": {
         "about": {
@@ -75,6 +77,7 @@
             "default_news_url": "Oletusarvoinen uutisosoite",
             "disable_googleanalytics": "Disable Google Analytics",
             "disable_googleanalytics_help": "Only used for developer to track the amount of users and wich device you are using for finetuning Dashticz.",
+            "disable_update_check": "Disable update check",
             "domoticz_ip": "Domoticz:n osoite",
             "domoticz_ip_help": "Enter Domoticz url, for example: http:\/\/192.168.1.1:8080. You can also enter users and password, for example: http:\/\/user:password@192.168.1.1:8080",
             "domoticz_refresh": "Päivitä Domoticz (sekuntia)",
@@ -94,7 +97,9 @@
             "use_favorites": "Käytä vain suosikkilaitteita",
             "use_favorites_help": "Käytetään vain, kun käytät automaattista sijaintien määritystä",
             "user_name": "Username",
-            "user_name_help": "Set Dashticz username and password"
+            "user_name_help": "Set Dashticz username and password",
+            "default_cors_url": "Default CORS URL",
+            "dashticz_php_path": "Dashticz PHP Path"
         },
         "infosave": "Asetukset tallennetaan oletuksena selaimen muistiin. Tämän menetelmän huono puoli on se, että se toimii vain kyseisessä selaimessa. Voit jatkaa mikäli tämä ei ole ongelma. Muussa tapauksessa kopioi alla oleva koodi CONFIG.JS tiedostoon pitääksesi samat asetukset kaikissa selaimissa ja laitteissa",
         "localize": {
@@ -127,6 +132,7 @@
             "sk": "Slovakia",
             "sl": "Slovenia",
             "speak_language": "Text to speech language",
+            "sr": "Serbian",
             "sv": "Ruotsi",
             "timeformat": "Aikamuoto",
             "title": "Paikallistaa",
@@ -156,6 +162,7 @@
             "dashticz_themes_help": "Set the name of the theme (eg. white) the theme will be overide by custom.css",
             "edit_mode": "Go to edit mode",
             "hide_topbar": "Piilota yläpalkki",
+            "security_button_icons": "Icons instead of text on security switch",
             "slide_effect": "Slide-vaikutus",
             "standard_graph": "Standardi kuvaaja",
             "standby_after": "Valmiustila (minuutit, 0 = ei koskaan)",
@@ -173,11 +180,23 @@
             "wu_api": "Wunderground API-Avain",
             "wu_city": "Wunderground asema (kaupunki tai koodi)",
             "wu_country": "Wunderground Maa",
-            "wu_name": "Näyttönimi"
+            "wu_name": "Näyttönimi",
+            "owm_api": "Open Weather Map API-Avain",
+            "owm_city": "Open Weather Map asema (kaupunki tai koodi)",
+            "owm_cnt": "Open Weather Map ennuste lasketaan (4 - 40)",
+            "owm_country": "Open Weather Map Maa",
+            "owm_name": "Näyttönimi Open Weather Map"
         }
     },
     "switches": {
+        "state_armaway": "Arm Away",
+        "state_armedaway": "Armed Away",
+        "state_armedhome": "Armed Home",
+        "state_armhome": "Arm Home",
         "state_closed": "Kiinni",
+        "state_disarm": "Disarm",
+        "state_disarmed": "Disarmed",
+        "state_locked": "LOCKED",
         "state_movement": "Liikettä",
         "state_nomovement": "Ei liikettä",
         "state_nosmoke": "Ei savua",
@@ -185,7 +204,8 @@
         "state_on": "Päällä",
         "state_open": "Auki",
         "state_smoke": "Savua havaittu",
-        "state_switch": "Kytkin"
+        "state_switch": "Kytkin",
+        "state_unlocked": "UNLOCKED"
     },
     "weekdays": {
         "entire_day": "Koko päivä",

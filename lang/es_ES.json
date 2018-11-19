@@ -26,7 +26,8 @@
         "today": "hoy"
     },
     "misc": {
-        "download": "Click here to download",
+        "download": "Haga clic aquí para descargar",
+        "enter_pincode": "Enter pin code",
         "last_update": "Última actualización",
         "loading": "Cargando...",
         "mediaplayer_nothing_playing": "Nada está jugando ahora",
@@ -37,7 +38,8 @@
         "spotify_back_to_playlist": "Volver a listas de reproducción",
         "spotify_select_device": "Seleccione dispositivo",
         "spotify_select_playlist": "Seleccionar lista de reproducción",
-        "value": "Valor"
+        "value": "Valor",
+        "wrong_code": "Wrong pin code"
     },
     "settings": {
         "about": {
@@ -75,6 +77,7 @@
             "default_news_url": "URL de noticias predeterminada",
             "disable_googleanalytics": "Disable Google Analytics",
             "disable_googleanalytics_help": "Only used for developer to track the amount of users and wich device you are using for finetuning Dashticz.",
+            "disable_update_check": "Disable update check",
             "domoticz_ip": "Domoticz URL",
             "domoticz_ip_help": "Enter Domoticz url, for example: http:\/\/192.168.1.1:8080. You can also enter users and password, for example: http:\/\/user:password@192.168.1.1:8080",
             "domoticz_refresh": "Actualizar Domoticz (segundos)",
@@ -94,7 +97,9 @@
             "use_favorites": "Sólo utilice dispositivos favoritos",
             "use_favorites_help": "Sólo se utiliza cuando se utiliza el posicionamiento automático",
             "user_name": "Username",
-            "user_name_help": "Set Dashticz username and password"
+            "user_name_help": "Set Dashticz username and password",
+            "default_cors_url": "Default CORS URL",
+            "dashticz_php_path": "Dashticz PHP Path"
         },
         "infosave": "De forma predeterminada, la configuración se almacena en su navegador. Lo malo de este método es que sólo funcionará en su navegador actual. Si eso no es un problema, puede continuar. De lo contrario, copie el código a continuación en su CONFIG.JS para mantener la configuración en todos los navegadores y dispositivos.",
         "localize": {
@@ -127,6 +132,7 @@
             "sk": "Eslovaca",
             "sl": "Esloveno",
             "speak_language": "Text to speech language",
+            "sr": "Serbian",
             "sv": "Sueco",
             "timeformat": "Formato de fecha y hora",
             "title": "Localizar",
@@ -156,6 +162,7 @@
             "dashticz_themes_help": "Set the name of the theme (eg. white) the theme will be overide by custom.css",
             "edit_mode": "Ir al modo de edición",
             "hide_topbar": "Ocultar topbar",
+            "security_button_icons": "Icons instead of text on security switch",
             "slide_effect": "El efecto de Slide",
             "standard_graph": "Gráfico estándar",
             "standby_after": "Espera después (minutos, 0 = nunca)",
@@ -173,11 +180,23 @@
             "wu_api": "Wunderground Clave de API",
             "wu_city": "Wunderground de la Estación (Ciudad o Código)",
             "wu_country": "Wunderground País",
-            "wu_name": "Nombre para mostrar"
+            "wu_name": "Nombre para mostrar",
+            "owm_api": "Open Weather Map Clave de API",
+            "owm_city": "Open Weather Map de la Estación (Ciudad o Código)",
+            "owm_cnt": "Open Weather Map recuento del pronóstico (4 - 40)",
+            "owm_country": "Open Weather Map País",
+            "owm_name": "Nombre para mostrar Open Weather Map"
         }
     },
     "switches": {
+        "state_armaway": "Arm Away",
+        "state_armedaway": "Armed Away",
+        "state_armedhome": "Armed Home",
+        "state_armhome": "Arm Home",
         "state_closed": "CERRADO",
+        "state_disarm": "Disarm",
+        "state_disarmed": "Disarmed",
+        "state_locked": "LOCKED",
         "state_movement": "MOVIMIENTO",
         "state_nomovement": "SIN MOVIMIENTO",
         "state_nosmoke": "No fumar",
@@ -185,7 +204,8 @@
         "state_on": "ENCENDIDO",
         "state_open": "ABIERTO",
         "state_smoke": "DETECTADO DE HUMO",
-        "state_switch": "Cambiar"
+        "state_switch": "Cambiar",
+        "state_unlocked": "UNLOCKED"
     },
     "weekdays": {
         "entire_day": "Todo el día",

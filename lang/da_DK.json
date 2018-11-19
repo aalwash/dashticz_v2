@@ -27,6 +27,7 @@
     },
     "misc": {
         "download": "Click here to download",
+        "enter_pincode": "Enter pin code",
         "last_update": "Sidste opdatering",
         "loading": "Indlæser...",
         "mediaplayer_nothing_playing": "Intet spiller lige nu",
@@ -37,7 +38,8 @@
         "spotify_back_to_playlist": "Tilbage til afspilningslister",
         "spotify_select_device": "Vælg enhed",
         "spotify_select_playlist": "Vælg afspilningsliste",
-        "value": "Værdi"
+        "value": "Værdi",
+        "wrong_code": "Wrong pin code"
     },
     "settings": {
         "about": {
@@ -75,6 +77,7 @@
             "default_news_url": "Standard news URL",
             "disable_googleanalytics": "Deaktiver Google Analytics",
             "disable_googleanalytics_help": "Kun brugt til udvikleren til at spore antal brugere og hvilken enhed du bruger til finjustering af Dashticz.",
+            "disable_update_check": "Disable update check",
             "domoticz_ip": "Domoticz URL",
             "domoticz_ip_help": "Indtast Domoticz url, for eksempel: http:\/\/192.168.1.1:8080. Du kan også indtaste brugere og adgangskode, for eksempel: http: \/\/ bruger: password@192.168.1.1: 8080",
             "domoticz_refresh": "Opdater Domoticz (sekunder)",
@@ -94,7 +97,9 @@
             "use_favorites": "Brug kun foretrukne enheder",
             "use_favorites_help": "Anvendes kun ved automatisk positionering",
             "user_name": "Username",
-            "user_name_help": "Set Dashticz username and password"
+            "user_name_help": "Set Dashticz username and password",
+            "default_cors_url": "Default CORS URL",
+            "dashticz_php_path": "Dashticz PHP Path"
         },
         "infosave": "Som standard gemmes indstillingerne i din browser. Ulempen ved denne metode er det kun vil virke i din nuværende browser. Hvis det ikke er et problem, kan du fortsætte. Ellers, kopier nedenstående kode til din CONFIG.JS for at beholde indstillinger på tværs af alle browsere og enheder.",
         "localize": {
@@ -127,6 +132,7 @@
             "sk": "Slovakisk",
             "sl": "Slovensk",
             "speak_language": "Tekst til tale sprog",
+            "sr": "Serbian",
             "sv": "Svensk",
             "timeformat": "Dato\/tid format",
             "title": "Lokaliser",
@@ -156,6 +162,7 @@
             "dashticz_themes_help": "Indstil temaets navn (f.eks. Hvid) temaet vil være overskrevet af custom.css",
             "edit_mode": "Gå til redigeringstilstand",
             "hide_topbar": "Skjul topbar",
+            "security_button_icons": "Icons instead of text on security switch",
             "slide_effect": "Slide effekt",
             "standard_graph": "Standarddiagram",
             "standby_after": "Standby efter (minutter, 0 = aldrig)",
@@ -173,11 +180,23 @@
             "wu_api": "Wunderground API-Nøgle",
             "wu_city": "Wunderground Station (by eller kode)",
             "wu_country": "Wunderground land",
-            "wu_name": "Visningsnavn"
+            "wu_name": "Visningsnavn",
+            "owm_api": "Open Weather Map API-Nøgle",
+            "owm_city": "Open Weather Map Station (by eller kode)",
+            "owm_cnt": "Open Weather Map prognose tæller (4 - 40)",
+            "owm_country": "Open Weather Map land",
+            "owm_name": "Visningsnavn Open Weather Map"
         }
     },
     "switches": {
+        "state_armaway": "Arm Away",
+        "state_armedaway": "Armed Away",
+        "state_armedhome": "Armed Home",
+        "state_armhome": "Arm Home",
         "state_closed": "LUKKET",
+        "state_disarm": "Disarm",
+        "state_disarmed": "Disarmed",
+        "state_locked": "LOCKED",
         "state_movement": "BEVÆGELSE",
         "state_nomovement": "INGEN BEVÆGELSE",
         "state_nosmoke": "Ingen Røg",
@@ -185,7 +204,8 @@
         "state_on": "TÆNDT",
         "state_open": "ÅBEN",
         "state_smoke": "RØG OPDAGET",
-        "state_switch": "Kontakt"
+        "state_switch": "Kontakt",
+        "state_unlocked": "UNLOCKED"
     },
     "weekdays": {
         "entire_day": "Hele dagen",

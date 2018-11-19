@@ -114,8 +114,8 @@
 }
 
 .trashcan {
-    width: 100%;
 	margin-left:-4px;
+	height:30px;
 }
 .modal {
 	z-index:9999;
@@ -333,7 +333,9 @@
     margin-top: -4px;
     margin-bottom: -4px;
 }
-.colbar.transbg .fa {
+.colbar.transbg .fab,
+.colbar.transbg .fas,
+.colbar.transbg .far {
     margin-top: 0px;
     font-size: 20px !important;
 	margin-left: 10px;
@@ -379,6 +381,11 @@ a.playlist {
 	overflow: hidden;
     max-height: 33px;
 }
+
+.containsspotify #current .current_track {
+	overflow: hidden;
+    max-height: 33px;
+}
 .containsspotify .change {
 	background-color: #282828;
 	display: block;
@@ -386,6 +393,14 @@ a.playlist {
 	padding: 3px;
 	padding-left: 4px;
 	color: #fff;
+}
+
+.containsspotify .fas {
+	font-size:30px !important
+}
+
+.containsspotify .shuffleoff {
+	color: #aaa;
 }
 
 .containsspotify select.devices{
@@ -533,10 +548,6 @@ a.playlist {
 	}
 }
 @media only screen and (max-width: 1000px) {
-.trashcan {
-	margin-left:0px !important;
-}
-
 	.input-groupBtn .stop {
 		width: 60px;
 		margin-right: -23px;
@@ -575,6 +586,7 @@ a.playlist {
 .lastupdate {
 	font-size: 10px;
     color: #bbb;
+		white-space:nowrap
 }
 .graphpopup {overflow:hidden;}
 html,
@@ -600,7 +612,7 @@ hr {
 	background-image:none !important;
 	background-color:#313131;
 }
-.standby .fa,.standby .fa.fa-small {
+.standby .far,.standby .far.fa-small,.standby .fas,.standby .fas.fa-small,.standby .fab,.standby .fab.fa-small, {
 	color:#fff !important;
 }
 
@@ -647,10 +659,12 @@ a:focus {
 		color:#fff;
 	}
 
-.fa.fa-newspaper-o {
+.fas.fa-newspaper,
+.far.fa-newspaper {
     margin-left: 1px;
 }
-.fa.fa-lightbulb-o {
+.fas.fa-lightbulb,
+.far.fa-lightbulb {
     margin-top: 1px;
     margin-left: 6px;
 }
@@ -688,35 +702,37 @@ select option {
 
 .wi {font-size:30px;}
 .wi.wi-rain {margin-top:0px;}
-.fa {font-size:30px;}
-.fa.fa-small {font-size:20px;}
-.fa.fa-thermometer-half {margin-left:8px;margin-top:2px;}
-.fa.fa-calendar {margin-left:4px;margin-top:1px;}
-.fa.fa-thermometer-half.fa-thermometer-half-switch {margin-left:4px;}
-.fa.fa-desktop {margin-top:5px;}
-.fa.fa-fire {margin-top:5px;}
-.fa.fa-plug {margin-top:5px;}
-.fa.fa-music{margin-top:5px;}
-.fa.fa-television,
-.fa.fa-microchip{margin-left: 3px;
+.fas {font-size:30px;}
+.far {font-size:30px;}
+.fab {font-size:30px;}
+.fas.fa-small {font-size:20px;}
+.fas.fa-thermometer-half {margin-left:8px;margin-top:2px;}
+.fas.fa-calendar {margin-left:4px;margin-top:1px;}
+.fas.fa-thermometer-half.fa-thermometer-half-switch {margin-left:4px;}
+.fas.fa-desktop {margin-top:5px;}
+.fas.fa-fire {margin-top:5px;}
+.fas.fa-plug {margin-top:5px;}
+.fas.fa-music{margin-top:5px;}
+.fas.fa-television,
+.fas.fa-microchip{margin-left: 3px;
     margin-top: 2px;}
-.containshorizon .fa { margin-top:8px; }
-.containsnzbget .fa { margin-top:8px; }
-.fa.fa-tint {
+.containshorizon .fas { margin-top:8px; }
+.containsnzbget .fas { margin-top:8px; }
+.fas.fa-tint {
     margin-left: 5px;
     margin-top: 4px;
 }
-.fa.fa-trash {
+.fas.fa-trash {
     margin-left: 8px;
 }
-.fa.fa-bolt {
+.fas.fa-bolt {
     margin-left: 8px;
 }
 .wi.wi-wind-direction {
     margin-left: 4px;
     margin-top: 2px;
 }
-.fa.fa-toggle-off {
+.fas.fa-toggle-off {
 	opacity: 0.5;
 	filter: alpha(opacity=50); /* For IE8 and earlier */
 }
@@ -887,7 +903,7 @@ Only add this hover on NON touch devices
 	margin:0px !important
 		
 }
-.fa.fa-train,.fa.fa-bus{
+.fas.fa-train,.fas.fa-bus{
 	margin-left:5px;
 	margin-top:3px;
 }
@@ -903,10 +919,20 @@ Only add this hover on NON touch devices
 }
 
 .col-icon {
-	width:50px !important;
+	width:40px !important;
 }
+
+.col-data {
+	width: calc(100% - 45px);
+}
+
+.col-no-icon {
+	width: calc(100% - 15px);
+}
+
 .slider {
 	margin-top:7px;
+	margin-right: 7px;
 }
 .weekday {margin-bottom: 5px;}
 .ui-widget.ui-widget-content {
@@ -1020,7 +1046,7 @@ img.icon {
 }
 
 
-	.blinds .fa.fa-arrow-up,.blinds .fa.fa-arrow-down,.blinds .fa.fa-stop-circle {
+	.blinds .fas.fa-arrow-up,.blinds .fas.fa-arrow-down,.blinds .fas.fa-stop-circle {
 		font-size: 20px !important;
     	margin-right: 3px !important;
 	}
@@ -1033,9 +1059,10 @@ img.icon {
 	img.icon {
 		max-width:20px !important;
 	}
-	.fa,.wi {
+	.fas,.far,.fab,.wi {
 		font-size:15px !important;
 	}
+	.fa-tv:before  {font-size:12px;}
 	#weather .wi {
 		font-size:24px !important;
 	}
@@ -1067,9 +1094,10 @@ img.icon {
 	img.icon {
 		max-width:15px !important;
 	}
-	.fa,.wi {
+	.fas,.far,.fab,.wi {
 		font-size:15px !important;
 	}
+	.fa-tv:before  {font-size:12px;}
 	
 	.big .wi {
 		font-size:30px !important;
@@ -1077,6 +1105,14 @@ img.icon {
 	.col-icon {
 		max-width:26px !important;
 	}
+	.col-data {
+		width: calc(100% - 30px);
+	}
+
+	.trashcan {
+		height: 25px !important;
+	}
+
 }
 
 .modal-dialog {
@@ -1367,7 +1403,9 @@ body {
 	font-size:10px !important;
 }
 
-
+a:not([href]) {
+    cursor: pointer;
+}
 
 /* PLUGINS */
 .morris-hover{position:absolute;z-index:1000}.morris-hover.morris-default-style{border-radius:10px;padding:6px;color:#666;background:rgba(255,255,255,0.8);border:solid 2px rgba(230,230,230,0.8);font-family:sans-serif;font-size:12px;text-align:center}.morris-hover.morris-default-style .morris-hover-row-label{font-weight:bold;margin:0.25em 0}

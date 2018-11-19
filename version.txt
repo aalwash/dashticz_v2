@@ -1,0 +1,13 @@
+{
+"version": "2.4.6",
+"branch": "beta",
+"last_changes": "Small change in garbage name mapping rules to support Dordrecht",
+"changelog" : {
+            "2.4.5": "Fix for cross origin issues with php",
+            "2.4.4": "Fix HVC garbage data",
+            "2.4.3": "Use local garbage.php module",
+            "2.4.2": "Merge PHP OV Module into Dashticz",
+            "2.4.1": "Merge PHP TV Module into Dashticz",
+            "2.4.0": "Upgrade to fontawesome 5.0.13"
+            }
+}

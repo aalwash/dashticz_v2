@@ -54,8 +54,8 @@ function addCalendar(calobject, icsUrlorg) {
 
         colors[$.md5(curUrl)] = color;
         var cache = new Date().getTime();
-        curUrl = 'http://dashticz.nl/ical/?time=' + cache + '&url=' + curUrl;
-        moment.locale(settings['calendarlanguage']);
+		    curUrl = settings['dashticz_php_path']+'ical/?time=' + cache + '&url=' + curUrl;
+	      moment.locale(settings['calendarlanguage']);
         $.getJSON(curUrl, function (data, textstatus, jqXHR) {
 
             var url = this.url.replace('https://cors-anywhere.herokuapp.com/http://ical-to-json.herokuapp.com/convert.json?url=', '');

@@ -27,6 +27,7 @@
     },
     "misc": {
         "download": "Click here to download",
+        "enter_pincode": "Enter pin code",
         "last_update": "Son Güncelleme",
         "loading": "Yüklüyor...",
         "mediaplayer_nothing_playing": "Şu anda hiçbirşey çalmıyor",
@@ -37,7 +38,8 @@
         "spotify_back_to_playlist": "Çalma listelerine geri dön",
         "spotify_select_device": "Aygıt seç",
         "spotify_select_playlist": "Çalma Listesini Seç",
-        "value": "Değer"
+        "value": "Değer",
+        "wrong_code": "Wrong pin code"
     },
     "settings": {
         "about": {
@@ -75,6 +77,7 @@
             "default_news_url": "Varsayılan haber URL'si",
             "disable_googleanalytics": "Disable Google Analytics",
             "disable_googleanalytics_help": "Only used for developer to track the amount of users and wich device you are using for finetuning Dashticz.",
+            "disable_update_check": "Disable update check",
             "domoticz_ip": "Domoticz URL Adresi",
             "domoticz_ip_help": "Enter Domoticz url, for example: http:\/\/192.168.1.1:8080. You can also enter users and password, for example: http:\/\/user:password@192.168.1.1:8080",
             "domoticz_refresh": "Domoticz'i yenile (saniye)",
@@ -94,7 +97,9 @@
             "use_favorites": "Sadece favori cihazları kullan",
             "use_favorites_help": "Sadece otomatik konumlandırma açıkken kullan",
             "user_name": "Username",
-            "user_name_help": "Set Dashticz username and password"
+            "user_name_help": "Set Dashticz username and password",
+            "default_cors_url": "Default CORS URL",
+            "dashticz_php_path": "Dashticz PHP Path"
         },
         "infosave": "Varsayılan olarak, ayarlar tarayıcınızda saklanır. Bu yöntemin dezavantajı yalnızca geçerli tarayıcınızda çalışacak olmasıdır. Bu bir sorun değilse, devam edebilirsiniz. Aksi takdirde, ayarları tüm tarayıcılarda ve aygıtlarda kullanmak için CONFIG.JS dosyasına aşağıdaki kodu kopyalayın.",
         "localize": {
@@ -127,6 +132,7 @@
             "sk": "Slovakça",
             "sl": "Slovence",
             "speak_language": "Text to speech language",
+            "sr": "Serbian",
             "sv": "İsveççe",
             "timeformat": "Tarih\/Saat biçimi",
             "title": "Yerelleştir",
@@ -156,6 +162,7 @@
             "dashticz_themes_help": "Set the name of the theme (eg. white) the theme will be overide by custom.css",
             "edit_mode": "Düzenleme moduna git",
             "hide_topbar": "Üst çubuğu gizle",
+            "security_button_icons": "Icons instead of text on security switch",
             "slide_effect": "Slayt efekti",
             "standard_graph": "Standart grafik",
             "standby_after": "Bekleme modu (dakika, 0= bekleme modu kapalı)",
@@ -173,11 +180,23 @@
             "wu_api": "Wunderground API Anahtarı",
             "wu_city": "Wunderground İstasyonu (Şehir veya Kod)",
             "wu_country": "Wunderground Ülke",
-            "wu_name": "Görüntü Adı"
+            "wu_name": "Görüntü Adı",
+            "owm_api": "Open Weather Map API Anahtarı",
+            "owm_city": "Open Weather Map İstasyonu (Şehir veya Kod)",
+            "owm_cnt": "Open Weather Map tahmin sayısı (4 - 40)",
+            "owm_country": "Open Weather Map Ülke",
+            "owm_name": "Görüntü Adı Open Weather Map"
         }
     },
     "switches": {
+        "state_armaway": "Arm Away",
+        "state_armedaway": "Armed Away",
+        "state_armedhome": "Armed Home",
+        "state_armhome": "Arm Home",
         "state_closed": "KAPALI",
+        "state_disarm": "Disarm",
+        "state_disarmed": "Disarmed",
+        "state_locked": "LOCKED",
         "state_movement": "HAREKET VAR",
         "state_nomovement": "HAREKET YOK",
         "state_nosmoke": "Duman Yok",
@@ -185,7 +204,8 @@
         "state_on": "AÇIK",
         "state_open": "AÇIK",
         "state_smoke": "DUMAN TESPİTİ",
-        "state_switch": "Anahtar"
+        "state_switch": "Anahtar",
+        "state_unlocked": "UNLOCKED"
     },
     "weekdays": {
         "entire_day": "Tüm Gün",

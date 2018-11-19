@@ -26,18 +26,20 @@
         "today": "aujourd'hui"
     },
     "misc": {
-        "download": "Click here to download",
+        "download": "Cliquez ici pour télécharger",
+        "enter_pincode": "Enter pin code",
         "last_update": "Dernière mise à jour",
         "loading": "Chargement...",
         "mediaplayer_nothing_playing": "Il n'y a pas de jeu",
-        "new_version": "New version is available",
+        "new_version": "Nouvelle version est disponible",
         "notifications_ns": "messages postés par le NS",
         "scheduled": "Prévu",
         "select": "Sélectionnez",
         "spotify_back_to_playlist": "Retour aux listes de lecture",
         "spotify_select_device": "Sélectionnez le périphérique",
         "spotify_select_playlist": "Sélectionnez playlist",
-        "value": "Valeur"
+        "value": "Valeur",
+        "wrong_code": "Wrong pin code"
     },
     "settings": {
         "about": {
@@ -75,6 +77,7 @@
             "default_news_url": "URL d'actualité par défaut",
             "disable_googleanalytics": "Disable Google Analytics",
             "disable_googleanalytics_help": "Only used for developer to track the amount of users and wich device you are using for finetuning Dashticz.",
+            "disable_update_check": "Disable update check",
             "domoticz_ip": "Domoticz URL",
             "domoticz_ip_help": "Enter Domoticz url, for example: http:\/\/192.168.1.1:8080. You can also enter users and password, for example: http:\/\/user:password@192.168.1.1:8080",
             "domoticz_refresh": "Actualiser Domoticz (secondes)",
@@ -94,7 +97,9 @@
             "use_favorites": "Utilisez uniquement des périphériques favoris",
             "use_favorites_help": "Utilisé uniquement lors de l'utilisation du positionnement automatique",
             "user_name": "Username",
-            "user_name_help": "Set Dashticz username and password"
+            "user_name_help": "Set Dashticz username and password",
+            "default_cors_url": "Default CORS URL",
+            "dashticz_php_path": "Dashticz PHP Path"
         },
         "infosave": "Par défaut, les paramètres sont stockés dans votre navigateur. L'inconvénient de cette méthode est que cela ne fonctionnera que dans votre navigateur actuel. Si ce n'est pas un problème, vous pouvez procéder. Sinon, copiez le code ci-dessous dans votre CONFIG.JS pour garder les paramètres sur tous les navigateurs et périphériques.",
         "localize": {
@@ -127,6 +132,7 @@
             "sk": "Slovaque",
             "sl": "Slovène",
             "speak_language": "Text to speech language",
+            "sr": "Serbian",
             "sv": "Suédois",
             "timeformat": "Format datetime",
             "title": "Localiser",
@@ -156,6 +162,7 @@
             "dashticz_themes_help": "Set the name of the theme (eg. white) the theme will be overide by custom.css",
             "edit_mode": "Passez en mode edit",
             "hide_topbar": "Masquer la barre supérieure",
+            "security_button_icons": "Icons instead of text on security switch",
             "slide_effect": "Effet de glissement",
             "standard_graph": "Graphique standard",
             "standby_after": "Veille après (minutes, 0 = jamais)",
@@ -173,11 +180,23 @@
             "wu_api": "Wunderground API Key",
             "wu_city": "Wunderground Station (Ville ou Code)",
             "wu_country": "Wunderground Pays",
-            "wu_name": "Nom D'Affichage"
+            "wu_name": "Nom D'Affichage",
+            "owm_api": "Open Weather Map API Key",
+            "owm_city": "Open Weather Map Station (Ville ou Code)",
+            "owm_cnt": "Open Weather Map nombre de prévisions (4 - 40)",
+            "owm_country": "Open Weather Map Pays",
+            "owm_name": "Nom D'Affichage Open Weather Map"
         }
     },
     "switches": {
+        "state_armaway": "Arm Away",
+        "state_armedaway": "Armed Away",
+        "state_armedhome": "Armed Home",
+        "state_armhome": "Arm Home",
         "state_closed": "FERMÉ",
+        "state_disarm": "Disarm",
+        "state_disarmed": "Disarmed",
+        "state_locked": "LOCKED",
         "state_movement": "MOUVEMENT",
         "state_nomovement": "Aucun mouvement",
         "state_nosmoke": "Pas de fumée",
@@ -185,7 +204,8 @@
         "state_on": "Allumé",
         "state_open": "OUVERT",
         "state_smoke": "FUMÉE DÉTECTÉE",
-        "state_switch": "Commuter"
+        "state_switch": "Commuter",
+        "state_unlocked": "UNLOCKED"
     },
     "weekdays": {
         "entire_day": "Toute la journée",
