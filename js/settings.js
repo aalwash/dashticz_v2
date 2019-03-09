@@ -80,6 +80,17 @@ settingList['general']['dashticz_php_path'] = {};
 settingList['general']['dashticz_php_path']['title'] = language.settings.general.dashticz_php_path;
 settingList['general']['dashticz_php_path']['type'] = 'text';
 
+settingList['general']['standby_call_url'] = {
+  title : language.settings.general.standby_call_url,
+  type: 'text'
+};
+
+settingList['general']['standby_call_url_on_end'] = {
+  title : language.settings.general.standby_call_url_on_end,
+  type: 'text'
+};
+
+
 /*
 settingList['general']['hide_off_button'] = {}
 settingList['general']['hide_off_button']['title'] = language.settings.general.hide_off_button;
@@ -142,6 +153,11 @@ settingList['screen']['security_button_icons'] = {};
 settingList['screen']['security_button_icons']['title'] = language.settings.screen.security_button_icons;
 settingList['screen']['security_button_icons']['type'] = 'checkbox';
 
+settingList['screen']['blink_color'] = {};
+settingList['screen']['blink_color']['title'] = language.settings.screen.blink_color;
+settingList['screen']['blink_color']['type'] = 'text';
+settingList['screen']['blink_color']['help'] = language.settings.screen.blink_color_help;
+
 settingList['screen']['edit_mode'] = {};
 settingList['screen']['edit_mode']['title'] = language.settings.screen.edit_mode;
 settingList['screen']['edit_mode']['type'] = 'checkbox';
@@ -163,10 +179,12 @@ settingList['localize']['language']['options']['fi_FI'] = language.settings.loca
 settingList['localize']['language']['options']['fr_FR'] = language.settings.localize.fr;
 settingList['localize']['language']['options']['hu_HU'] = language.settings.localize.hu;
 settingList['localize']['language']['options']['it_IT'] = language.settings.localize.it;
+settingList['localize']['language']['options']['lt_LT'] = language.settings.localize.lt;
 settingList['localize']['language']['options']['nl_NL'] = language.settings.localize.nl;
-settingList['localize']['language']['options']['nn_NO'] = language.settings.localize.no;
+settingList['localize']['language']['options']['nb_NO'] = language.settings.localize.no;
 settingList['localize']['language']['options']['pl_PL'] = language.settings.localize.pl;
 settingList['localize']['language']['options']['pt_PT'] = language.settings.localize.pt;
+settingList['localize']['language']['options']['ro_RO'] = language.settings.localize.ro;
 settingList['localize']['language']['options']['ru_RU'] = language.settings.localize.ru;
 settingList['localize']['language']['options']['sk_SK'] = language.settings.localize.sk;
 settingList['localize']['language']['options']['sl_SL'] = language.settings.localize.sl;
@@ -195,10 +213,12 @@ settingList['localize']['calendarlanguage']['options']['fi_FI'] = language.setti
 settingList['localize']['calendarlanguage']['options']['fr_FR'] = language.settings.localize.fr;
 settingList['localize']['calendarlanguage']['options']['hu_HU'] = language.settings.localize.hu;
 settingList['localize']['calendarlanguage']['options']['it_IT'] = language.settings.localize.it;
+settingList['localize']['calendarlanguage']['options']['lt_LT'] = language.settings.localize.lt;
 settingList['localize']['calendarlanguage']['options']['nl_NL'] = language.settings.localize.nl;
-settingList['localize']['calendarlanguage']['options']['nn_NO'] = language.settings.localize.no;
+settingList['localize']['calendarlanguage']['options']['nb_NO'] = language.settings.localize.no;
 settingList['localize']['calendarlanguage']['options']['pl_PL'] = language.settings.localize.pl;
 settingList['localize']['calendarlanguage']['options']['pt_PT'] = language.settings.localize.pt;
+settingList['localize']['calendarlanguage']['options']['ro_RO'] = language.settings.localize.ro;
 settingList['localize']['calendarlanguage']['options']['ru_RU'] = language.settings.localize.ru;
 settingList['localize']['calendarlanguage']['options']['sk_SK'] = language.settings.localize.sk;
 settingList['localize']['calendarlanguage']['options']['sl_SL'] = language.settings.localize.sl;
@@ -291,9 +311,25 @@ settingList['weather']['owm_country'] = {};
 settingList['weather']['owm_country']['title'] = language.settings.weather.owm_country;
 settingList['weather']['owm_country']['type'] = 'text';
 
+settingList['weather']['owm_lang'] = {};
+settingList['weather']['owm_lang']['title'] = language.settings.weather.owm_lang;
+settingList['weather']['owm_lang']['type'] = 'text';
+settingList['weather']['owm_lang']['help'] = language.settings.weather.owm_lang_help;
+
+settingList['weather']['owm_days'] = {};
+settingList['weather']['owm_days']['title'] = language.settings.weather.owm_days;
+settingList['weather']['owm_days']['type'] = 'checkbox';
+settingList['weather']['owm_days']['help'] = language.settings.weather.owm_days_help;
+
 settingList['weather']['owm_cnt'] = {};
 settingList['weather']['owm_cnt']['title'] = language.settings.weather.owm_cnt;
 settingList['weather']['owm_cnt']['type'] = 'text';
+settingList['weather']['owm_cnt']['help'] = language.settings.weather.owm_cnt_help;
+
+settingList['weather']['owm_min'] = {};
+settingList['weather']['owm_min']['title'] = language.settings.weather.owm_min;
+settingList['weather']['owm_min']['type'] = 'checkbox';
+settingList['weather']['owm_min']['help'] = language.settings.weather.owm_min_help;
 
 settingList['weather']['idx_moonpicture'] = {};
 settingList['weather']['idx_moonpicture']['title'] = language.settings.weather.idx_moonpicture;
@@ -316,6 +352,17 @@ settingList['weather']['translate_windspeed']['help'] = language.settings.weathe
 settingList['weather']['static_weathericons'] = {};
 settingList['weather']['static_weathericons']['title'] = language.settings.weather.static_weathericons;
 settingList['weather']['static_weathericons']['type'] = 'checkbox';
+
+settingList['weather']['longfonds_zipcode'] = {};
+settingList['weather']['longfonds_zipcode'] = {
+  title: language.settings.weather.longfonds_zipcode,
+  type: 'text'
+}
+settingList['weather']['longfonds_housenumber'] = {};
+settingList['weather']['longfonds_housenumber'] = {
+  title: language.settings.weather.longfonds_housenumber,
+  type: 'text'
+}
 
 settingList['media'] = {};
 settingList['media']['title'] = language.settings.media.title;
@@ -379,6 +426,7 @@ settingList['garbage']['garbage_company']['options']['gemertbakeldinsdag'] = 'Ge
 settingList['garbage']['garbage_company']['options']['gemertbakelwoensdag'] = 'Gemert-Bakel, woensdag (NL)';
 settingList['garbage']['garbage_company']['options']['goes'] = 'Goes (NL)';
 settingList['garbage']['garbage_company']['options']['hvc'] = 'HVC Groep (NL)';
+settingList['garbage']['garbage_company']['options']['katwijk'] = 'Katwijk (NL)';
 settingList['garbage']['garbage_company']['options']['meerlanden'] = 'Meerlanden (NL)';
 settingList['garbage']['garbage_company']['options']['mijnafvalwijzer'] = 'Mijn Afval Wijzer (NL)';
 settingList['garbage']['garbage_company']['options']['recyclemanager'] = 'Recycle Manager';
@@ -452,6 +500,19 @@ settingList['garbage']['garbage_use_cors_prefix']['title'] = language.settings.g
 settingList['garbage']['garbage_use_cors_prefix']['type'] = 'checkbox';
 settingList['garbage']['garbage_use_cors_prefix']['help'] = language.settings.garbage.garbage_use_prefix_help;
 
+settingList['other'] = {};
+settingList['other']['title'] = language.settings.other.title;
+
+settingList['other']['setpoint_min'] = {};
+settingList['other']['setpoint_min']['title'] = language.settings.other.setpoint_min;
+settingList['other']['setpoint_min']['type'] = 'text';
+/* settingList['other']['setpoint_min']['help'] = language.settings.other.setpoint_min_help; */
+
+settingList['other']['setpoint_max'] = {};
+settingList['other']['setpoint_max']['title'] = language.settings.other.setpoint_max;
+settingList['other']['setpoint_max']['type'] = 'text';
+/* settingList['other']['setpoint_max']['help'] = language.settings.other.setpoint_max_help; */
+
 settingList['about'] = {};
 settingList['about']['title'] = language.settings.about.title;
 
@@ -459,7 +520,7 @@ settingList['about']['about_text'] = {};
 settingList['about']['about_text']['title'] = 'Dashticz V' + dashticz_version + ' ' + dashticz_branch + ' by Rob Geerts<br>' + newVersion;
 
 settingList['about']['about_text2'] = {};
-settingList['about']['about_text2']['title'] = 'Years after developing the old and original Dashticz, I decided to start over.<br><br>For more help visit: <a href="http://www.domoticz.com/wiki/Dashticz_V2" target="_blank">http://www.domoticz.com/wiki/Dashticz_V2</a><br>You can also check out our helpful <a href="https://www.domoticz.com/forum/viewforum.php?f=67" target="_blank">community</a> in Dashticz topic on the Domoticz forum.';
+settingList['about']['about_text2']['title'] = 'Years after developing the old and original Dashticz, I decided to start over.<br><br>For more help visit: <a href="https://www.domoticz.com/wiki/Dashticz_V2" target="_blank">https://www.domoticz.com/wiki/Dashticz_V2</a><br>You can also check out our helpful <a href="https://www.domoticz.com/forum/viewforum.php?f=67" target="_blank">community</a> in Dashticz topic on the Domoticz forum.';
 
 settingList['about']['about_text3'] = {};
 settingList['about']['about_text3']['title'] = 'Do you appreciate my work and want to buy me a beer? You can send me Bitcoins (17Qy4bsLM9J238fCZt5kaRc2bD5S1Aw6og) or donate via PayPal: <a href="https://www.paypal.me/robgeerts" target="_blank">https://www.paypal.me/robgeerts</a>'
@@ -468,6 +529,7 @@ settingList['about']['about_text4'] = {};
 settingList['about']['about_text4']['title'] = 'If you have any issues you can report them in our community thread <a href="https://www.domoticz.com/forum/viewtopic.php?f=67&t=17427" target="_blank">Bug report</a>.'
 
 var settings = {};
+var _CORS_PATH = '';
 doneSettings = false;
 if (typeof(Storage) !== "undefined") {
     $.each(localStorage, function (key, value) {
@@ -499,7 +561,6 @@ if (typeof(settings['pass_word']) === 'undefined') settings['pass_word'] = '';
 if (typeof(settings['app_title']) === 'undefined') settings['app_title'] = 'Dashticz';
 if (typeof(settings['domoticz_refresh']) === 'undefined') settings['domoticz_refresh'] = 5;
 if (typeof(settings['dashticz_refresh']) === 'undefined') settings['dashticz_refresh'] = 60;
-if (typeof(settings['default_cors_url']) === 'undefined') settings['default_cors_url'] = 'https://cors-anywhere.herokuapp.com/';
 if (typeof(settings['dashticz_php_path']) === 'undefined') settings['dashticz_php_path'] = './vendor/dashticz/';
 if (typeof(settings['wu_api']) === 'undefined') settings['wu_api'] = '';
 if (typeof(settings['wu_country']) === 'undefined') settings['wu_country'] = 'NL';
@@ -507,6 +568,7 @@ if (typeof(settings['wu_city']) === 'undefined') settings['wu_city'] = 'Amsterda
 if (typeof(settings['owm_api']) === 'undefined') settings['owm_api'] = '';
 if (typeof(settings['owm_country']) === 'undefined') settings['owm_country'] = 'de';
 if (typeof(settings['owm_city']) === 'undefined') settings['owm_city'] = 'Mainaschaff';
+if (typeof(settings['owm_days']) === 'undefined') settings['owm_days'] = 0;
 if (typeof(settings['owm_cnt']) === 'undefined') settings['owm_cnt'] = 4;
 if (typeof(settings['boss_stationclock']) === 'undefined') settings['boss_stationclock'] = 'RedBoss';
 if (typeof(settings['use_fahrenheit']) === 'undefined') settings['use_fahrenheit'] = 0;
@@ -526,6 +588,7 @@ if (typeof(settings['selector_instead_of_buttons']) === 'undefined') settings['s
 if (typeof(settings['default_news_url']) === 'undefined') settings['default_news_url'] = 'http://www.nu.nl/rss/algemeen';
 if (typeof(settings['news_scroll_after']) === 'undefined') settings['news_scroll_after'] = 7;
 if (typeof(settings['standard_graph']) === 'undefined') settings['standard_graph'] = 'hours';
+if (typeof(settings['blink_color']) === 'undefined') settings['blink_color'] = '255, 255, 255, 1';
 if (typeof(settings['edit_mode']) === 'undefined') settings['edit_mode'] = 0;
 if (typeof(settings['units']) === 'undefined') {
     settings['units'] = {
@@ -583,6 +646,8 @@ if (typeof(settings['background_image']) === 'undefined') settings['background_i
 if (typeof(settings['loginEnabled']) === 'undefined') settings['loginEnabled'] = 0;
 if (typeof(settings['security_button_icons']) === 'undefined') settings['security_button_icons'] = 0;
 if (typeof(settings['disable_update_check']) === 'undefined') settings['disable_update_check'] = 0;
+if (typeof(settings['setpoint_min']) === 'undefined') settings['setpoint_min'] = 5;
+if (typeof(settings['setpoint_max']) === 'undefined') settings['setpoint_max'] = 40;
 
 //The Config settings for all checkbox items will be converted to a number
 for (var s in settingList){
@@ -597,6 +662,7 @@ var _TEMP_SYMBOL = '°C';
 if (settings['use_fahrenheit'] === 1) _TEMP_SYMBOL = '°F';
 
 var phpversion = '<br>PHP not installed!!';
+var _PHP_INSTALLED = false;
 
 $.ajax({
     url: settings['dashticz_php_path']+'info.php?get=phpversion',
@@ -604,8 +670,25 @@ $.ajax({
     dataType: 'json',
     success: function (data) {
         phpversion = '<br> PHP version: ' + data;
-                }
+        _PHP_INSTALLED = true;
+      },
+    error: function () {
+      console.log('PHP not installed.');
+    }
 });
+
+if (typeof(settings['default_cors_url'])==='undefined' || settings['default_cors_url']==='') {
+  if(_PHP_INSTALLED)
+    _CORS_PATH = settings['dashticz_php_path']+'cors.php?'
+  else {
+    _CORS_PATH = 'https://cors-anywhere.herokuapp.com/';
+    console.log('PHP not enabled and default_cors_url not set.');
+    console.log('CORS proxy: ' + _CORS_PATH);
+  }
+//    _CORS_PATH = 'http://192.168.178.18:8081/';
+}
+else
+  _CORS_PATH = settings['default_cors_url'];
 
 settingList['about']['about_text5'] = {};
 settingList['about']['about_text5']['title'] = domoversion + dzVents + python + phpversion;

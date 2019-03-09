@@ -28,7 +28,7 @@ function loadGarbage() {
 
 function getPrefixUrl() {
     if (settings['garbage_use_cors_prefix']) {
-        return settings['default_cors_url'];
+        return _CORS_PATH;
     }
     return '';
 }
@@ -161,7 +161,7 @@ function getWasteApi2Data(address, date, random, companyCode) {
 
 function getOphaalkalenderData(address, date, random) {
     $('.trash' + random + ' .state').html('');
-    var baseURL = 'http://www.ophaalkalender.be';
+    var baseURL = 'https://www.ophaalkalender.be';
 
     $.getJSON(getPrefixUrl() + baseURL + '/calendar/findstreets/?query=' + address.street + '&zipcode=' + address.zipcode, function (data) {
         $.getJSON(getPrefixUrl() + baseURL + '/api/rides?id=' + data[0].Id + '&housenumber=0&zipcode=' + address.zipcode, function (data) {
@@ -215,6 +215,11 @@ function getAfvalwijzerArnhemData(address, date, random) {
 }
 
 function getGeneralData(service,address, date, random, subservice){
+  if(!_PHP_INSTALLED) {
+    console.error("Domoticz error!\nGarbage requires a PHP enabled web server.");
+    infoMessage('<font color="red">Domoticz error!', 'Garbage requires a PHP enabled web server</font>', 0);
+    return;
+  }
   var cURI = settings['dashticz_php_path']+'garbage/?service='+service+'&sub='+subservice+'&zipcode=' + address.zipcode + '&nr=' + address.housenumber + '&t=' + address.housenumberSuffix;
 	$.getJSON(cURI, function (data) {
 		 data = data
@@ -230,6 +235,20 @@ function getGeneralData(service,address, date, random, subservice){
             });
         addToContainer(random, data);
 	});
+}
+
+function getKatwijkData(address, date, random, fetchType) {
+    var prefix = 'https://afval.katwijk.nl/';
+    $.post(getPrefixUrl() + prefix + 'nc/afvalkalender/', {
+      'tx_windwastecalendar_pi1[action]': 'search',
+      'tx_windwastecalendar_pi1[controller]': 'Zipcode',
+      'tx_windwastecalendar_pi1[Hash]': '40c183c983706ba359f1122b44881a5e',
+        'tx_windwastecalendar_pi1[zipcode]': address.zipcode,
+        'tx_windwastecalendar_pi1[housenumber]': address.housenumber,
+    }, function (data) {
+                var elementHref = $(data).find('.ical .link a').attr('href');
+                return getIcalData(address, date, random, prefix + elementHref);
+    });
 }
 
 function getZuidhornData(address, date, random, fetchType) {
@@ -480,6 +499,7 @@ function loadDataForService(service, random) {
         afvalwijzerarnhem: {dataHandler: 'getAfvalwijzerArnhemData', identifier: ''},
         zuidhornical: {dataHandler: 'getZuidhornData', identifier: 'ical'},
         zuidhorn: {dataHandler: 'getZuidhornData', identifier: 'scrape'},
+        katwijk: {dataHandler: 'getKatwijkData', identifier: ''},
         deafvalapp: {dataHandler: 'getDeAfvalAppData', identifier: ''},
         cure: {dataHandler: 'getAfvalstromenData', identifier: 'cure'},
         cyclusnv: {dataHandler: 'getAfvalstromenData', identifier: 'cyclusnv'},

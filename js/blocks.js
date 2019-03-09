@@ -42,6 +42,19 @@ blocktypes.Type['Temp'] = {
 };
 blocktypes.Type['Air Quality'] = {image: 'air.png', title: '<Name>', value: '<Data>'};
 blocktypes.Type['UV'] = {icon: 'fas fa-sun', title: '<Name>', value: '<Data>'};
+blocktypes.Type['Variable'] = {icon: 'fas fa-equals', title: '<Name>', value: '<Value>'};
+
+//Recognition of
+//"HardwareType" : "RFXCOM - RFXtrx433 USB 433.92MHz Transceiver",
+//"Type" : "Energy",
+//"SubType" : "CM180",
+blocktypes.Type['Energy'] = {icon: 'fas fa-plug', title: '<Name>', value: '<Data>'};
+
+//Recognition of
+//"HardwareType" : "RFXCOM - RFXtrx433 USB 433.92MHz Transceiver",
+//"Type" : "Current/Energy",
+//"SubType" : "CM180i",
+blocktypes.Type['Current/Energy'] = {icon: 'fas fa-plug', title: '<Name>', value: '<Data>'};
 
 blocktypes.HardwareType = {};
 blocktypes.HardwareType['Motherboard sensors'] = {icon: 'fas fa-desktop', title: '<Name>', value: '<Data>'};
@@ -70,6 +83,7 @@ blocktypes.Name['Mondphase'] = {icon: 'fas fa-moon', title: '<Data>', value: '<N
 
 blocktypes = getExtendedBlockTypes(blocktypes);
 
+var myBlockNumbering=0;  //To give all blocks a unique number
 
 function getBlock(cols, c, columndiv, standby) {
     if (typeof(cols) !== 'undefined') {
@@ -100,19 +114,22 @@ function getBlock(cols, c, columndiv, standby) {
                     continue;
                 }
             }
-
+            $(columndiv).append('<div id="block_' + myBlockNumbering + '"</div>');
+            var myIndex = myBlockNumbering++;
+            var myblockselector = '#block_' + myIndex;
+            
             switch (typeof(cols['blocks'][b])) {
                 case 'object':
-                    handleObjectBlock(cols['blocks'][b], b, columndiv, width, c);
+                    handleObjectBlock(cols['blocks'][b], myIndex, myblockselector, width, c);
                     continue;
 
                 case 'string':
-                    handleStringBlock(cols['blocks'][b], columndiv, width, c);
+                    handleStringBlock(cols['blocks'][b], myblockselector, width, c);
                     continue;
 
-                default:
-                    $(columndiv).append('<div data-id="' + cols['blocks'][b] + '" class="mh transbg block_' + cols['blocks'][b] + '"></div>');
-                    break;
+                    default:
+                        $(myblockselector).html('<div data-id="' + cols['blocks'][b] + '" class="mh transbg block_' + cols['blocks'][b] + '"></div>');
+                        break;
             }
         }
     }
@@ -247,7 +264,7 @@ function handleStringBlock(block, columndiv, width, c) {
             return;
 		case 'longfonds':
 			$(columndiv).append('<div data-id="longfonds" class="mh transbg block_longfonds col-xs-'+width+'"></div>');
-			$.getJSON(settings['default_cors_url'] + 'https://www.longfonds.nl/gezondelucht/api/zipcode-check?zipcode='+settings['longfonds_zipcode']+'&houseNumber='+settings['longfonds_housenumber'],function(data){
+			$.getJSON(_CORS_PATH + 'https://www.longfonds.nl/gezondelucht/api/zipcode-check?zipcode='+settings['longfonds_zipcode']+'&houseNumber='+settings['longfonds_housenumber'],function(data){
 				var stateBlock = '<div class="col-xs-4 col-icon">';
 				stateBlock += '<em class="fas fa-cloud"></em>';
 				stateBlock += '</div>';
@@ -348,10 +365,7 @@ function handleObjectBlock(block, index, columndiv, width, c) {
     if (block.hasOwnProperty('latitude')) {
         $(columndiv).append(loadMaps(random, block));
         return;
-    } else if (block.hasOwnProperty('isimage')) {
-        $(columndiv).append(loadImage(random, block));
-        return;
-    }
+  }
     var key = 'UNKNOWN';
     if (block.hasOwnProperty('key')) key = block['key'];
     if (block.hasOwnProperty('width')) width = block['width'];
@@ -392,6 +406,8 @@ function handleObjectBlock(block, index, columndiv, width, c) {
         addCalendar($('.containsicalendar' + random), block);
     } else {
         $(columndiv).append(loadButton(index, block));
+        if(buttonIsClickable(block))
+          $(columndiv).click(block, buttonOnClick);
     }
 }
 
@@ -435,11 +451,19 @@ function getStateBlock(id, icon, title, value, device) {
     stateBlock += '<div class="col-xs-8 col-data">';
 
     if (titleAndValueSwitch(id)) {
-        stateBlock += '<strong class="title">' + title + '</strong><br />';
-        stateBlock += '<span class="value">' + value + '</span>';
+		if (hideTitle(id)) {
+			stateBlock += '<span class="value">' + value + '</span>';
+		} else {
+			stateBlock += '<strong class="title">' + title + '</strong><br />';
+			stateBlock += '<span class="value">' + value + '</span>';			
+		}
     } else {
-        stateBlock += '<strong class="title">' + value + '</strong><br />';
-        stateBlock += '<span class="value">' + title + '</span>';
+		if (hideTitle(id)) {
+			stateBlock += '<strong class="title">' + value + '</strong>';
+		} else {
+			stateBlock += '<strong class="title">' + value + '</strong><br />';		
+			stateBlock += '<span class="value">' + title + '</span>';		
+		}			
     }
     if (showUpdateInformation(id)) {
         stateBlock += '<br /><span class="lastupdate">' + moment(device['LastUpdate']).format(settings['timeformat']) + '</span>';
@@ -503,12 +527,20 @@ function getStatusBlock(idx, device, block, c) {
 
     stateBlock += '<div class="col-xs-8 col-data">';
     if (titleAndValueSwitch(idx)) {
-        stateBlock += '<strong class="title">' + title + '</strong><br />';
-        stateBlock += '<span class="value">' + value + '</span>';
+		if (hideTitle(idx)) {
+			stateBlock += '<span class="value">' + value + '</span>';
+		} else {
+			stateBlock += '<strong class="title">' + title + '</strong><br />';
+			stateBlock += '<span class="value">' + value + '</span>';			
+		}
     } else {
-        stateBlock += '<strong class="title">' + value + '</strong><br />';
-        stateBlock += '<span class="value">' + title + '</span>';
-    }
+		if (hideTitle(idx)) {
+			stateBlock += '<strong class="title">' + value + '</strong>';
+		} else {
+			stateBlock += '<strong class="title">' + value + '</strong><br />';		
+			stateBlock += '<span class="value">' + title + '</span>';		
+		}			
+    }	
 
     if (showUpdateInformation(idx)) {
         stateBlock += '<br /><span class="lastupdate">' + moment(device['LastUpdate']).format(settings['timeformat']) + '</span>';
@@ -633,6 +665,12 @@ function titleAndValueSwitch(idx) {
     return typeof(blocks[idx]) !== 'undefined'
         && typeof(blocks[idx]['switch']) !== 'undefined'
         && blocks[idx]['switch'];
+}
+
+function hideTitle(idx) {
+    return typeof(blocks[idx]) !== 'undefined'
+        && typeof(blocks[idx]['hide_title']) !== 'undefined'
+        && blocks[idx]['hide_title'];
 }
 
 function showUpdateInformation(idx) {

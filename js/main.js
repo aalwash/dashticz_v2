@@ -32,6 +32,14 @@ var _DECIMAL_POINT = ',';
 var _STANDBY_CALL_URL = '';
 var _END_STANDBY_CALL_URL = '';
 var lastGetDevicesTime = 0;
+var allVariables = {};
+
+function utf8_to_b64( str ) {
+    return window.btoa(unescape(encodeURIComponent( str )));
+}
+function b64_to_utf8( str ) {
+    return decodeURIComponent(escape(window.atob( str )));
+}
 
 function loadFiles() {
     $.ajax({url: customfolder + '/CONFIG.js', async: false, dataType: 'script'}).done(function () {
@@ -76,7 +84,6 @@ function loadFiles() {
 				}
 			}
 
-            $('<link href="css/creative.css?v=' + cache + '" rel="stylesheet">').appendTo('head');
             $('<link href="vendor/weather/css/weather-icons.min.css?v=' + cache + '" rel="stylesheet">').appendTo('head');
 
             if (settings['theme'] !== 'default') {
@@ -106,6 +113,7 @@ function loadFiles() {
             $.ajax({url: 'js/blocks.js', async: false, dataType: 'script'});
             $.ajax({url: 'js/graphs.js', async: false, dataType: 'script'});
             $.ajax({url: 'js/login.js', async: false, dataType: 'script'});
+            $.ajax({url: 'js/moon.js', async: false, dataType: 'script'});
 
             sessionValid();
 
@@ -151,14 +159,14 @@ function onLoad() {
 		$('#loaderHolder').fadeOut();
 		$('body').css('overflow','auto');
 	},2000);
-
+  
+    setClockDateWeekday();
     setInterval(function () {
-        $('.clock').html(moment().locale(settings['language']).format(settings['hide_seconds'] ? settings['shorttime'] : settings['longtime']));
-        $('.date').html(moment().locale(settings['language']).format(settings['longdate']));
-        $('.weekday').html(moment().locale(settings['language']).format(settings['weekday']));
+      setClockDateWeekday();
     }, settings['hide_seconds'] ? 30000 : 1000);
 
     enableRefresh();
+    getVariables();
     getDevices();
     setClassByTime();
 	
@@ -249,8 +257,14 @@ function onLoad() {
     }
 }
 
+function setClockDateWeekday() {
+  $('.clock').html(moment().locale(settings['language']).format(settings['hide_seconds'] ? settings['shorttime'] : settings['longtime']));
+  $('.date').html(moment().locale(settings['language']).format(settings['longdate']));
+  $('.weekday').html(moment().locale(settings['language']).format(settings['weekday']));  
+}
+
 function toSlide(num) {
-    if (typeof(myswiper) !== 'undefined') myswiper.slideTo(num, 1000, false);
+    if (typeof(myswiper) !== 'undefined') myswiper.slideTo(num, 1000, true);
 }
 
 
@@ -303,9 +317,9 @@ function buildScreens() {
             for (s in screens[t]) {
                 if (s !== 'maxwidth' && s !== 'maxheight') {
                     var screenhtml = '<div class="screen screen' + s + ' swiper-slide slide' + s + '"';
-					if (typeof(screens[t][s]['background']) === 'undefined') {
-						screens[t][s]['background'] = settings['background_image'];
-					}
+          					if (typeof(screens[t][s]['background']) === 'undefined') {
+          						screens[t][s]['background'] = settings['background_image'];
+          					}
                     if (typeof(screens[t][s]['background']) !== 'undefined') {
                         if (screens[t][s]['background'].indexOf("/") > 0) screenhtml += 'style="background-image:url(\'' + screens[t][s]['background'] + '\');"';
                         else screenhtml += 'style="background-image:url(\'img/' + screens[t][s]['background'] + '\');"';
@@ -329,10 +343,9 @@ function buildScreens() {
 
                         for (cs in screens[t][s]['columns']) {
                            if(typeof(screens[t])!=='undefined'){
-
-						   	c = screens[t][s]['columns'][cs];
-                            getBlock(columns[c], c, 'div.screen' + s + ' .row .col' + c, false);
-						   }
+						   	                   c = screens[t][s]['columns'][cs];
+                                   getBlock(columns[c], c, 'div.screen' + s + ' .row .col' + c, false);
+						                }
                         }
                     }
                     else {
@@ -381,8 +394,9 @@ function buildScreens() {
                             $('.col3 .auto_sunrise').html('<div class="block_sunrise col-xs-12 transbg text-center sunriseholder"><em class="wi wi-sunrise"></em><span id="sunrise" class="sunrise"></span><em class="wi wi-sunset"></em><span id="sunset" class="sunset"></span></div>');
                             if (typeof(buttons) !== 'undefined') {
                                 for (b in buttons) {
-                                    if (buttons[b].isimage) $('.col3 .auto_buttons').append(loadImage(b, buttons[b]));
-                                    else $('.col3 .auto_buttons').append(loadButton(b, buttons[b]));
+                                    $('.col3 .auto_buttons').append('<div id="block_' + myBlockNumbering + '"</div>');
+                                    var myblockselector = '#block_' + myBlockNumbering++;
+                                    handleObjectBlock(buttons[b], b, myblockselector, 12, null);
                                 }
                             }
                         }
@@ -422,7 +436,19 @@ function startSwiper() {
                         paginationClickable: true,
                         loop: false,
                         effect: settings['slide_effect'],
-                        keyboardControl: true
+                        keyboardControl: true,
+                        onSlideChangeStart: function (swiper) {
+                          $('.slide').removeClass('selectedbutton');
+                        },
+                        onSlideChangeEnd: function (swiper) {
+                    //after Event use it for your purpose
+                          $('.slide'+(1+swiper.activeIndex)).addClass('selectedbutton');
+                        },
+                        onInit: function() {
+                          $('.slide1').addClass('selectedbutton');                            
+                        }
+
+                        
                     });
 
                 }, 2000);
@@ -549,6 +575,50 @@ function playAudio(file) {
         ion.sound.play(filename);
     }
 }
+function removeLoading() {
+  $('#loadingMessage').css('display', 'none');
+}
+
+function createModalDialog(dialogClass, dialogId, myFrame) {
+    var setWidth = false;
+    var setHeight = false;
+    var mySetUrl = 'data-popup';
+    if (typeof(myFrame.framewidth) !== 'undefined') {
+      mywidth = myFrame.framewidth;
+      setWidth = true;
+      if(typeof(mywidth)==='number')
+        mywidth = mywidth + 'px'; 
+    }
+    if (typeof(myFrame.frameheight) !== 'undefined'){
+      myheight = myFrame.frameheight;
+      setHeight = true;
+      if(typeof(myheight)==='number')
+        myheight = myheight + 'px'; 
+    }
+    var html = '<div class="modal fade ' + dialogClass  + '" id="' + dialogId + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+
+    html += '<div class="modal-dialog modal-dialog-custom" style="' 
+    html += setWidth ? 'width: ' + mywidth + '; ' : '';
+    html += '" >';
+
+    html += '<div class="modal-content">';
+    html += '<div class="modal-header frameclose">';
+    html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+    html += '</div>';
+    html += '<div class="modal-body modalframe">';
+    if(dialogClass==='openpopup') {
+      mySetUrl = 'src';
+    }
+    html += '<div id="loadingMessage">' + language.misc.loading + '</div>';
+    html += '<iframe class="popupheight" ' + mySetUrl + '="' + myFrame.url + '" width="100%" height="100%" frameborder="0" allowtransparency="true" style="'
+    html += setHeight ? 'height: ' + myheight + '; ' : '';
+    html += '" onload="removeLoading()" ></iframe> ';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    return html;
+}
 
 function triggerStatus(idx, value, device) {
     try {
@@ -576,19 +646,8 @@ function triggerStatus(idx, value, device) {
 		var random = getRandomInt(1, 100000);
 		$('.modal.openpopup,.modal-backdrop').remove();
 
-		var html = '<div class="modal fade openpopup" id="popup_' + random + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
-		html += '<div class="modal-dialog">';
-		html += '<div class="modal-content">';
-		html += '<div class="modal-header">';
-		html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-		html += '</div>';
-		html += '<div class="modal-body">';
-		html += '<iframe src="' + blocks[idx]['openpopupOn']['url'] + '" width="100%" height="570" frameborder="0" allowtransparency="true"></iframe> ';
-		html += '</div>';
-		html += '</div>';
-		html += '</div>';
-		html += '</div>';
-		$('body').append(html);
+    $('body').append(createModalDialog('openpopup', 'popup_' + random,blocks[idx]['openpopupOn']));
+
 		$('#popup_' + random).modal('show');
 
 		if (typeof(blocks[idx]['openpopupOn']['auto_close']) !== 'undefined') {
@@ -617,19 +676,8 @@ function triggerStatus(idx, value, device) {
 		var random = getRandomInt(1, 100000);
 		$('.modal.openpopup,.modal-backdrop').remove();
 
-		var html = '<div class="modal fade openpopup" id="popup_' + random + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
-		html += '<div class="modal-dialog">';
-		html += '<div class="modal-content">';
-		html += '<div class="modal-header">';
-		html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-		html += '</div>';
-		html += '<div class="modal-body">';
-		html += '<iframe src="' + blocks[idx]['openpopupOff']['url'] + '" width="100%" height="570" frameborder="0" allowtransparency="true"></iframe> ';
-		html += '</div>';
-		html += '</div>';
-		html += '</div>';
-		html += '</div>';
-		$('body').append(html);
+    $('body').append(createModalDialog('openpopup', 'popup_' + random, blocks[idx]['openpopupOff']));
+
 		$('#popup_' + random).modal('show');
 
 		if (typeof(blocks[idx]['openpopupOff']['auto_close']) !== 'undefined') {
@@ -651,7 +699,14 @@ function triggerChange(idx, value, device) {
         }
         catch (err) {
         }
-
+        
+        if (typeof(blocks[idx]) !== 'undefined' && typeof(blocks[idx]['flash']) !=='undefined') {
+            var flash_value = blocks[idx]['flash'];
+            if(flash_value>0) {
+              $('.block_'+idx).stop().addClass('blockchange',flash_value).removeClass('blockchange',flash_value);      
+            }
+        }
+        
         if (typeof(blocks[idx]) !== 'undefined' && typeof(blocks[idx]['playsound']) !== 'undefined') {
             playAudio(blocks[idx]['playsound']);
         }
@@ -665,19 +720,8 @@ function triggerChange(idx, value, device) {
             var random = getRandomInt(1, 100000);
             $('.modal.openpopup,.modal-backdrop').remove();
 
-            var html = '<div class="modal fade openpopup" id="popup_' + random + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
-            html += '<div class="modal-dialog">';
-            html += '<div class="modal-content">';
-            html += '<div class="modal-header">';
-            html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-            html += '</div>';
-            html += '<div class="modal-body">';
-            html += '<iframe src="' + blocks[idx]['openpopup']['url'] + '" width="100%" height="570" frameborder="0" allowtransparency="true"></iframe> ';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            $('body').append(html);
+            $('body').append(createModalDialog('openpopup', 'popup_' + random, blocks[idx]['openpopup']));
+
             $('#popup_' + random).modal('show');
 
             if (typeof(blocks[idx]['openpopup']['auto_close']) !== 'undefined') {
@@ -715,19 +759,8 @@ function loadMaps(b, map) {
     var random = getRandomInt(1, 100000);
 
     if (typeof(map.link) !== 'undefined') {
-        var html = '<div class="modal fade" id="trafficmap_frame_' + b + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
-        html += '<div class="modal-dialog">';
-        html += '<div class="modal-content">';
-        html += '<div class="modal-header">';
-        html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-        html += '</div>';
-        html += '<div class="modal-body">';
-        html += '<iframe data-popup="' + map.link + '" width="100%" height="570" frameborder="0" allowtransparency="true"></iframe> ';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-        $('body').append(html);
+      map['url'] = map.link;
+      $('body').append(createModalDialog('','trafficmap_frame_' + b, map));
     }
 
     var key = 'UNKNOWN';
@@ -747,60 +780,95 @@ function loadMaps(b, map) {
     return html;
 }
 
+function buttonLoadFrame(button) //Displays the frame of a button after pressing is
+{
+  
+  var random = getRandomInt(1, 100000);
+  $('body').append(createModalDialog('openpopup','button_' + random , button));
+  if (button.log == true) {
+      if (typeof(getLog) !== 'function') $.ajax({url: 'js/log.js', async: false, dataType: 'script'});
+      $('#button_' + random  + ' .modal-body').html('');
+      getLog($('#button_' + random + ' .modal-body'), button.level, true);
+  }
+  $('#button_'+random).on('hidden.bs.modal', function () {
+        $(this).data('bs.modal', null);
+        $(this).remove();
+  });
+
+  $('#button_' + random ).modal('show');
+
+}
+
+function buttonOnClick(m_event)
+//button clickhandler. Assumption: button is clickable
+{
+  var button = m_event.data;
+  if (typeof(button.newwindow) !== 'undefined') {
+      window.open(button.url);
+  }
+  else if (typeof(button.slide) !== 'undefined') {
+    toSlide(button.slide-1);
+  }
+  else {
+        buttonLoadFrame(button);
+  }
+}
+
+function buttonIsClickable(button) {
+  var clickable = typeof(button.url) !== 'undefined' || button.log == true || typeof(button.slide)!=='undefined';
+  return clickable;
+}
+
 function loadButton(b, button) {
-    var random = getRandomInt(1, 100000);
-    if ($('#button_' + b).length == 0) {
-        var html = '<div class="modal fade" id="button_' + b + '_' + random + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
-        html += '<div class="modal-dialog">';
-        html += '<div class="modal-content">';
-        html += '<div class="modal-header">';
-        html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-        html += '</div>';
-        html += '<div class="modal-body">';
-        html += '<iframe data-popup="' + button.url + '" width="100%" height="570" frameborder="0" allowtransparency="true"></iframe> ';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-        $('body').append(html);
-
-        if (button.log == true) {
-            if (typeof(getLog) !== 'function') $.ajax({url: 'js/log.js', async: false, dataType: 'script'});
-            $('#button_' + b + '_' + random + ' .modal-body').html('');
-            getLog($('#button_' + b + '_' + random + ' .modal-body'), button.level, true);
-        }
-
-    }
     var width = 12;
     if (typeof(button.width) !== 'undefined') width = button.width;
 
-    var key = 'UNKNOWN';
+    var key = b;
     if (typeof(button.key) !== 'undefined') key = button.key;
-
-    if (typeof(button.newwindow) !== 'undefined') {
-        var html = '<div class="col-xs-' + width + ' hover transbg buttons-' + key + '" data-id="buttons.' + key + '" onclick="window.open(\'' + button.url + '\')">';
+    
+    var slideToext ='';
+    
+    if (typeof(button.slide) !== 'undefined') {
+      slideToext = ' slide slide'+button.slide;
     }
-    else if (typeof(button.slide) !== 'undefined') {
-        var html = '<div class="col-xs-' + width + ' hover transbg buttons-' + key + '" data-id="buttons.' + key + '" onclick="toSlide(' + (parseFloat(button.slide) - 1) + ')">';
+    
+    html = '<div class="col-xs-' + width + (buttonIsClickable(button) ? ' hover ' : ' ') +  ' transbg buttons-' + key + slideToext +'" data-id="buttons.' + key + '">';
+
+    if (button.hasOwnProperty('isimage')) {
+      var img='';
+      if (typeof(button.image) !== 'undefined') {
+          img = button.image;
+      }
+      if (img == 'moon') {
+          img = getMoonInfo(button);
+      }
+      html += '<img id="buttonimg_'+ b + '" src="' + img + '" style="max-width:100%;" />';
+      
+      var refreshtime = 60000;
+      if (typeof(button.refresh) !== 'undefined') refreshtime = button.refresh;
+      if (typeof(button.refreshimage) !== 'undefined') refreshtime = button.refreshimage;
+      setInterval(function () {
+          reloadImage(b, button, true);
+      }, refreshtime);
+
     }
     else {
-        var html = '<div class="col-xs-' + width + ' hover transbg buttons-' + key + '" data-id="buttons.' + key + '" data-toggle="modal" data-target="#button_' + b + '_' + random + '" onclick="setSrc(this);">';
-    }
+      if (typeof(button.title) !== 'undefined') {
+          html += '<div class="col-xs-4 col-icon">';
+      }
+      else {
+          html += '<div class="col-xs-12 col-icon">';
+      }
 
-    if (typeof(button.title) !== 'undefined') {
-        html += '<div class="col-xs-4 col-icon">';
-    }
-    else {
-        html += '<div class="col-xs-12 col-icon">';
-    }
-    if (typeof(button.image) !== 'undefined') html += '<img class="buttonimg" src="' + button.image + '" />';
-    else html += '<em class="' + button.icon + ' fa-small"></em>';
-    html += '</div>';
-    if (typeof(button.title) !== 'undefined') {
-        html += '<div class="col-xs-8 col-data">';
-        html += '<strong class="title">' + button.title + '</strong><br>';
-        html += '<span class="state"></span>';
-        html += '</div>';
+      if (typeof(button.image) !== 'undefined') html += '<img class="buttonimg" src="' + button.image + '" />';
+      else html += '<em class="' + button.icon + ' fa-small"></em>';
+      html += '</div>';
+      if (typeof(button.title) !== 'undefined') {
+          html += '<div class="col-xs-8 col-data">';
+          html += '<strong class="title">' + button.title + '</strong><br>';
+          html += '<span class="state"></span>';
+          html += '</div>';
+      }
     }
     html += '</div>';
     return html;
@@ -828,133 +896,59 @@ function loadFrame(f, frame) {
     return html;
 }
 
-function reloadFrame(i, frame) {
-    var sep = '?';
-
-    if (typeof(frame.frameurl) !== 'undefined') {
-        var img = frame.frameurl;
-        if (img.indexOf("?") != -1) var sep = '&';
-
-        if (img.indexOf("?") != -1) {
-            var newimg = img.split(sep + 't=');
-            img = newimg;
-        }
-        img += sep + 't=' + (new Date()).getTime();
-    }
-
-    $('.imgblock' + i).find('iframe').attr('src', img);
-}
-
-function loadImage(i, image) {
-    if (typeof(image.image) !== 'undefined') {
-        var img = image.image;
-    }
-
-    if ($('.imgblockopens' + i).length == 0 && typeof(image.url) !== 'undefined') {
-        var html = '<div class="modal fade imgblockopens' + i + '" id="' + i + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
-        html += '<div class="modal-dialog">';
-        html += '<div class="modal-content">';
-        html += '<div class="modal-header">';
-        html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-        html += '</div>';
-        html += '<div class="modal-body">';
-        html += '<iframe data-popup="' + image.url + '" width="100%" height="570" frameborder="0" allowtransparency="true"></iframe> ';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-        $('body').append(html);
-    }
-
-    var key = 'UNKNOWN';
-    if (typeof(image.key) !== 'undefined') key = image.key;
-
-    var width = 12;
-    if (typeof(image.width) !== 'undefined') width = image.width;
-    var html = '';
-
-    if (typeof(image.url) !== 'undefined') html += '<div data-id="buttons.' + key + '" class="col-xs-' + width + ' hover transbg imgblock imgblock' + i + '" data-toggle="modal" data-target="#' + i + '" onclick="setSrc(this);">';
-    else html += '<div class="col-xs-' + width + ' transbg imgblock imgblock' + i + '" data-id="buttons.' + key + '">';
-    html += '<div class="col-xs-12">';
-
-    if (img == 'moon') {
-        html += '<div class="moon">';
-        img = getMoonInfo(image);
-        html += '</div>';
-    } else {
-        html += '<img src="' + img + '" style="max-width:100%;" />';
-    }
-    html += '</div>';
-    html += '</div>';
-
-    var refreshtime = 60000;
-    if (typeof(image.refresh) !== 'undefined') refreshtime = image.refresh;
-    if (typeof(image.refreshimage) !== 'undefined') refreshtime = image.refreshimage;
-    setInterval(function () {
-        reloadImage(i, image, true);
-    }, refreshtime);
-
-    var refreshtime = 60000;
-    if (typeof(image.refreshiframe) !== 'undefined') refreshtime = image.refreshiframe;
-    setInterval(function () {
-        reloadIframe(i, image, true);
-    }, refreshtime);
-
-    return html;
-}
-
-function reloadImage(i, image) {
-    var sep = '?';
-
-    if (typeof(image.image) !== 'undefined') {
-        var img = image.image;
-        if (img.indexOf("?") != -1) var sep = '&';
-
-        if (img.indexOf("?") != -1) {
-            var newimg = img.split(sep + 't=');
-            img = newimg;
-        }
-        img += sep + 't=' + (new Date()).getTime();
-    }
-
-    $('.imgblock' + i).find('img').attr('src', img);
-}
-
-function reloadIframe(i, image) {
-    var sep = '?';
-
-    if (typeof(image.url) !== 'undefined') {
-        var url = image.url;
-        if (url.indexOf("?") != -1) var sep = '&';
-
+function checkForceRefresh(m_instance, url){
+//adds current time to an url if forcerefresh is set to 1 or true
+//calls nocache.php in case forcerefresh is 2.
+  if(typeof(m_instance.forcerefresh)!=='undefined') {
+    
+    switch (m_instance.forcerefresh) {
+      case true:
+      case 1:
+        var sep = '?';
         if (url.indexOf("?") != -1) {
+            sep = '&';
             var newurl = url.split(sep + 't=');
             url = newurl;
         }
         url += sep + 't=' + (new Date()).getTime();
-    }
+        break;
+      case 2:
+        url = settings['dashticz_php_path']+'nocache.php?'+url;
+        break;
+      }
+  }
+  return url;  
+}
 
-    if (typeof($('.imgblockopens' + i + ' iframe').attr('src') !== 'undefined')) {
-        $('.imgblockopens' + i + ' iframe').attr('src', url);
+function reloadFrame(i, frame) {
+    if (typeof(frame.frameurl) !== 'undefined') {
+        $('.imgblock' + i).find('iframe').attr('src', checkForceRefresh(frame, frame.frameurl));
+    }
+}
+
+function reloadImage(i, image) {
+    if (typeof(image.image) !== 'undefined') {
+      if (image.image === 'moon') 
+        src = getMoonInfo(image)
+      else
+        src = checkForceRefresh(image, image.image);
+      $('#buttonimg_' + i).attr('src', src);
+    }
+}
+
+function reloadIframe(i, image) {
+    if (typeof(image.url) !== 'undefined') {
+        if (typeof($('.imgblockopens' + i + ' iframe').attr('src') !== 'undefined')) {
+            $('.imgblockopens' + i + ' iframe').attr('src', checkForceRefresh(image, image.url));
+        }
     }
 }
 
 function getMoonInfo(image) {
-    req = $.getJSONP({
-        url: settings['domoticz_ip'] + "/json.htm?username=" + usrEnc + "&password=" + pwdEnc + "&type=command&param=getuservariable&idx=" + settings['idx_moonpicture'] + "&jsoncallback=?",
-        type: 'GET', async: true, contentType: "application/json", dataType: 'jsonp',
-        format: "json",
-        success: function (data) {
-            for (r in data.result) {
-                var src = '';
-                var device = data.result[r];
-                var value = device['Value'];
-                src = 'img/moon/' + value;
-                image.image = 'img/moon/' + value;
-                $("div.moon").replaceWith('<div class="moon"><img src="' + src + '" style="width:100%;" /></div>');
-            }
-        }
-    });
+  var mymoon = new MoonPhase(new Date());
+  var myphase = parseInt(mymoon.phase() *100 + 50) % 100;
+  src = 'img/moon/moon.' + ("0" + myphase).slice (-2)+'.png';
+  return src;
 }
 
 function appendHorizon(columndiv) {
@@ -1098,70 +1092,15 @@ function getDevices(override) {
             url: settings['domoticz_ip'] + '/json.htm?'+usrinfo+'type=devices&plan=' + settings['room_plan'] + '&filter=all&used=true&order=Name',
             type: 'GET', async: true, contentType: "application/json",
             error: function (jqXHR, textStatus) {
-                console.error("Domoticz error!\nPlease, double check the path to Domoticz in Settings!");
-				infoMessage('<font color="red">Domoticz error!', 'double check the path to Domoticz in Settings!</font>', 0);
+                if(typeof(textStatus)!=='undefined' && textStatus === 'abort') {
+                  console.log('Domoticz request cancelled')
+                } else {
+                  console.error("Domoticz error code: " + jqXHR.status + ' ' + textStatus + "!\nPlease, double check the path to Domoticz in Settings!");
+				          infoMessage('<font color="red">Domoticz error code: ' + jqXHR.status + '!', 'double check the path to Domoticz in Settings!</font>');
+                }
             },
             success: function (data) {
-
-				/*
-				data = `{
-"ActTime" : 1525604220,
-"AstrTwilightEnd" : "23:46",
-"AstrTwilightStart" : "03:25",
-"CivTwilightEnd" : "21:48",
-"CivTwilightStart" : "05:23",
-"DayLength" : "15:07",
-"NautTwilightEnd" : "22:39",
-"NautTwilightStart" : "04:31",
-"ServerTime" : "2018-05-06 12:57:00",
-"SunAtSouth" : "13:05",
-"Sunrise" : "06:02",
-"Sunset" : "21:09",
-"result" : [
-{
-"AddjMulti" : 1.0,
-"AddjMulti2" : 1.0,
-"AddjValue" : 0.0,
-"AddjValue2" : 0.0,
-"BatteryLevel" : 100,
-"CustomImage" : 0,
-"Data" : "27.2 C, 35 %",
-"Description" : "",
-"DewPoint" : "10.41",
-"Favorite" : 1,
-"HardwareID" : 6,
-"HardwareName" : "RFXcom",
-"HardwareType" : "RFXCOM - RFXtrx433 USB 433.92MHz Transceiver",
-"HardwareTypeVal" : 1,
-"HaveTimeout" : false,
-"Humidity" : 35,
-"HumidityStatus" : "Dry",
-"ID" : "1603",
-"LastUpdate" : "2018-05-06 12:56:57",
-"Name" : "Buiten",
-"Notifications" : "true",
-"PlanID" : "1",
-"PlanIDs" : [ 1 ],
-"Protected" : false,
-"ShowNotifications" : true,
-"SignalLevel" : 5,
-"SubType" : "Alecto WS1700",
-"Temp" : 27.199999999999999,
-"Timers" : "false",
-"Type" : "Temp + Humidity",
-"TypeImg" : "temperature",
-"Unit" : 3,
-"Used" : 1,
-"XOffset" : "21",
-"YOffset" : "150",
-"idx" : "16"
-}
-],
-"status" : "OK",
-"title" : "Devices"
-}`
-				data=$.parseJSON(data);*/
-				gettingDevices = false;
+				        gettingDevices = false;
                 if (!sliding || override) {
                     $('.solar').remove();
                     if ($('.sunrise').length > 0) $('.sunrise').html(data.Sunrise);
@@ -1179,7 +1118,10 @@ function getDevices(override) {
                         $('div.newblocks.plugins').append('<div data-id="weather"><span class="title">' + language.settings.weather.title + '</span></div>');
                         $('div.newblocks.plugins').append('<div data-id="news"><span class="title">' + language.editmode.news + '</span></div>');
                     }
-
+                    //Add all variables to device table
+                    for(v in allVariables) {
+                      data.result.push(allVariables[v]);            
+                    }
                     for (r in data.result) {
                         var device = data.result[r];
                         var idx = device['idx'];
@@ -1246,6 +1188,8 @@ function getDevices(override) {
                             for (var i = 1; i <= 5; i++) {
                                 if ($('div.block_' + idx + '_' + i).length > 0) {
                                     $('div.block_' + idx + '_' + i).data('light', idx);
+                                    if (typeof(blocks[idx + '_' + i]) !== 'undefined' && typeof(blocks[idx + '_' + i]['width']) !== 'undefined')
+                    									width = blocks[idx+ '_' + i]['width'];
                                     $('div.block_' + idx + '_' + i).addClass('col-xs-' + width);
                                     $('div.block_' + idx + '_' + i).html('');
                                 }
@@ -1296,11 +1240,32 @@ function getDevices(override) {
 }
 
 
+function getVariables() {
+  var usrinfo ='';
+  if(typeof(usrEnc)!=='undefined' && usrEnc!=='') usrinfo = 'username=' + usrEnc + '&password=' + pwdEnc + '&';
+      $.get({
+          url: settings['domoticz_ip'] + '/json.htm?'+usrinfo+'type=command&param=getuservariables',
+          type: 'GET', async: true, contentType: "application/json",
+          error: function (jqXHR, textStatus) {
+              console.error("Domoticz error!\nPlease, double check the path to Domoticz in Settings!");
+              infoMessage('<font color="red">Domoticz error!', 'double check the path to Domoticz in Settings!</font>', 0);
+          },
+          success: function (data) {
+            allVariables= data.result;
+            for(v in allVariables) {
+              allVariables[v].idx='v'+allVariables[v].idx;
+              allVariables[v].Type='Variable';
+            }
+          }
+        });
+}
+
 function getDevicesTmr() {
 	if ( settings['edit_mode']) return;
 	var tmpnow = new Date();
 	if (tmpnow.getTime()>=lastGetDevicesTime + settings['domoticz_refresh'] * 1000-50) {
 		getDevices();
+    getVariables();
 	} 
 }
 
@@ -1550,9 +1515,9 @@ function handleDevice(device, idx) {
     }
 
     if (typeof(device['LevelActions']) !== 'undefined' && device['LevelNames'] !== "") {
-	var names;
-        if (levelNamesEncoded === true) names =  window.atob(device['LevelNames']).split('|');
-	else names = device['LevelNames'].split('|');
+    var names;
+        if (levelNamesEncoded === true) names = b64_to_utf8(device['LevelNames']).split('|');
+    else names = device['LevelNames'].split('|');
 
         if(device['Status'] === 'Off') html += iconORimage(idx, 'far fa-lightbulb', buttonimg, getIconStatusClass(device['Status']) + ' icon');
 	else html += iconORimage(idx, 'fas fa-lightbulb', buttonimg, getIconStatusClass(device['Status']) + ' icon');
@@ -2051,6 +2016,7 @@ function getThermostatBlock(device, idx) {
     $('div.block_' + idx + '_1').html(this.html);
 
     this.html = '';
+/*
     this.html += '<ul class="col-thermostat input-groupBtn">';
     this.html += '<li class="up"><a href="javascript:void(0)" class="btn btn-number plus" data-type="plus" data-field="quant[' + device['idx'] + ']" onclick="this.blur();">';
     this.html += '<em class="fas fa-plus fa-small fa-thermostat"></em>';
@@ -2059,9 +2025,18 @@ function getThermostatBlock(device, idx) {
     this.html += '<em class="fas fa-minus fa-small fa-thermostat"></em>';
     this.html += '</a></li>';
     this.html += '</ul>';
-
+*/
+    this.html += '<div class="col-button1">';
+    this.html += '<div class="up"><a href="javascript:void(0)" class="btn btn-number plus" data-type="plus" data-field="quant[' + device['idx'] + ']" onclick="this.blur();">';
+    this.html += '<em class="fas fa-plus fa-small fa-thermostat"></em>';
+    this.html += '</a></div>';
+    this.html += '<div class="down"><a href="javascript:void(0)" class="btn btn-number min" data-type="minus" data-field="quant[' + device['idx'] + ']" onclick="this.blur();">';
+    this.html += '<em class="fas fa-minus fa-small fa-thermostat"></em>';
+    this.html += '</a></div>';
+    this.html += '</div>';
+    
     this.html += iconORimage(idx + '_2', '', 'heating.png', 'on icon iconheating', '', '2');
-    this.html += '<div class="col-xs-8 col-data">';
+    this.html += '<div class="col-xs-8 col-data right1col">';
 
     this.title = number_format(device['Data'], 1) + _TEMP_SYMBOL;
     this.value = device['Name'];
@@ -2069,7 +2044,7 @@ function getThermostatBlock(device, idx) {
         this.title = device['Name'];
         this.value = number_format(device['Data'], 1) + _TEMP_SYMBOL;
     }
-    this.html += '<strong class="title input-number title-input" min="12" max="25" data-light="' + device['idx'] + '">' + this.title + '</strong>';
+    this.html += '<strong class="title input-number title-input" min="' + settings['setpoint_min'] + '" max="' + settings['setpoint_max'] + '" data-light="' + device['idx'] + '">' + this.title + '</strong>';
     this.html += '<div class="state stateheating">' + this.value + '</div>';
     this.html += '</div>';
 
@@ -2186,11 +2161,26 @@ function getDimmerBlock(device, idx, buttonimg) {
 function getBlindsBlock(device, idx, withPercentage) {
     if (typeof(withPercentage) === 'undefined') withPercentage = false;
     this.html = '';
-    this.html += '<div class="col-xs-4 col-icon">';
+
+    var hidestop = false;
+    var data_class = 'col-data blinds';
+    var button_class;
+    if (typeof(blocks[idx]) == 'undefined' || typeof(blocks[idx]['hide_stop']) == 'undefined' || blocks[idx]['hide_stop'] === false) {
+      data_class += ' right2col';
+      button_class = 'col-button2';
+
+//        this.html += '<div class="col-button">';
+    } else {
+        hidestop = true;
+        data_class += ' right1col';
+        button_class = 'col-button1';
+  //      this.html += '<div class="col-button hidestop">';
+    }
+
+
     if(device['Status'] === 'Closed') this.html += iconORimage(idx, '', 'blinds_closed.png', 'off icon', '', 2);
     else this.html += iconORimage(idx, '', 'blinds_open.png', 'on icon', '', 2);
-    this.html += '</div>';
-    this.html += '<div class="col-xs-8 col-data">';
+    this.html += '<div class="' + data_class + '">';
     this.title = device['Name'];
     if (withPercentage) {
         if (typeof(blocks[idx]) == 'undefined' || typeof(blocks[idx]['hide_data']) == 'undefined' || blocks[idx]['hide_data'] == false) {
@@ -2213,6 +2203,7 @@ function getBlindsBlock(device, idx, withPercentage) {
     this.html += this.value;
     this.html += '</div>';
 
+/*
     if (typeof(blocks[idx]) == 'undefined' || typeof(blocks[idx]['hide_stop']) == 'undefined' || blocks[idx]['hide_stop'] === false) {
         var hidestop = false;
         this.html += '<ul class="input-groupBtn input-chevron">';
@@ -2242,6 +2233,30 @@ function getBlindsBlock(device, idx, withPercentage) {
     }
 
     this.html += '</ul>';
+*/
+  this.html += '<div class="' + button_class + '">';
+
+    this.upAction = 'Off';
+    this.downAction = 'On';
+    if (device['SwitchType'].toLowerCase().indexOf('inverted') >= 0) {
+        this.upAction = 'On';
+        this.downAction = 'Off';
+    }
+    this.html += '<div class="up"><a href="javascript:void(0)" class="btn btn-number plus" onclick="switchBlinds(' + device['idx'] + ',\'' + this.upAction + '\');">';
+    this.html += '<em class="fas fa-chevron-up fa-small"></em>';
+    this.html += '</a></div>';
+
+    this.html += '<div class="down"><a href="javascript:void(0)" class="btn btn-number min" onclick="switchBlinds(' + device['idx'] + ',\'' + this.downAction + '\');">';
+    this.html += '<em class="fas fa-chevron-down fa-small"></em>';
+    this.html += '</a></div>';
+
+    if (!hidestop) {
+        this.html += '<div class="stop"><a href="javascript:void(0)" class="btn btn-number stop" onclick="switchBlinds(' + device['idx'] + ',\'Stop\');">';
+        this.html += 'STOP';
+        this.html += '</a></div>';
+    }
+
+    this.html += '</div>';
 
     $('div.block_' + idx).html(this.html);
 
@@ -2262,13 +2277,15 @@ function addSlider(idx, sliderValues) {
         step: sliderValues.step,
         min: sliderValues.min,
         max: sliderValues.max,
-        slide: function (event, ui) {
+        start: function (event, ui) {
             sliding = true;
-            slideDevice($(this).data('light'), ui.value);
+            slideDeviceExt($(this).data('light'), ui.value,0);
+        },
+        slide: function (event, ui) {
+            slideDeviceExt($(this).data('light'), ui.value,1);
         },
         change: function (event, ui) {
-            sliding = true;
-            slideDevice($(this).data('light'), ui.value);
+            slideDeviceExt($(this).data('light'), ui.value,2);
         },
         stop: function (event, ui) {
             sliding = false;

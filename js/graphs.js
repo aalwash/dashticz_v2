@@ -3,7 +3,6 @@ function getGraphs(device, popup) {
     var txtUnit = '?';
     var currentValue = device['Data'];
     var decimals = 2;
-
     switch (device['Type']) {
         case 'Rain':
             sensor = 'rain';
@@ -40,6 +39,28 @@ function getGraphs(device, popup) {
             txtUnit = '%';
             decimals = 1;
             break;
+        case 'RFXMeter':
+            txtUnit = device['CounterToday'].split(' ')[1];
+            currentValue = device['CounterToday'].split(' ')[0];
+          switch (device['SwitchTypeVal']) {
+
+            case 0: //Energy
+              break;
+            case 1: //Gas
+              break;
+            case 2: //Water
+              decimals = 0;
+              break;
+            case 3: //Counter
+              break;
+            case 4: //Energy generated
+              break;
+            case 5: //Time
+              break;
+          }
+          
+          break;
+
     }
 
     switch (device['SubType']) {
@@ -109,7 +130,6 @@ function getGraphs(device, popup) {
             currentValue = device['CounterToday'].split(' ')[0];
             break;
     }
-
     currentValue = number_format(currentValue, decimals);
     showGraph(device['idx'], device['Name'], txtUnit, 'initial', currentValue, false, sensor, popup);
 }
@@ -121,9 +141,9 @@ function getGraphByIDX(idx) {
 function getButtonGraphs(device) {
     if ($('#opengraph' + device['idx']).length === 0) {
         var html = '<div class="modal fade opengraph' + device['idx'] + '" data-idx="' + device['idx'] + '" id="opengraph' + device['idx'] + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
-        html += '<div class="modal-dialog">';
+        html += '<div class="modal-dialog graphwidth">';
         html += '<div class="modal-content">';
-        html += '<div class="modal-header">';
+        html += '<div class="modal-header graphclose">';
         html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
         html += '</div>';
         html += '<div class="modal-body block_graphpopup_' + device['idx'] + '">' + language.misc.loading;
@@ -170,6 +190,8 @@ function showGraph(idx, title, label, range, current, forced, sensor, popup) {
         realrange = range;
         if (range === 'last') realrange = 'day';
 
+        var blocksConfig = typeof(blocks['graph_' + idx]) !== 'undefined' ? blocks['graph_' + idx] : null;
+
         $.ajax({
             url: settings['domoticz_ip'] + '/json.htm?username=' + usrEnc + '&password=' + pwdEnc + '&type=graph&sensor=' + sensor + '&idx=' + idx + '&range=' + realrange + '&time=' + new Date().getTime() + '&jsoncallback=?',
             type: 'GET', async: true, contentType: "application/json", dataType: 'jsonp',
@@ -179,14 +201,25 @@ function showGraph(idx, title, label, range, current, forced, sensor, popup) {
                     return;
                 }
                 var buttons = createButtons(idx, title, label, range, current, sensor, popup);
+                var baseTitle = title;
 
-                title = '<h4>' + title;
+                if (blocksConfig && typeof(blocksConfig['title']) !== 'undefined') {
+                    baseTitle = blocksConfig['title'];
+                }
+
+                title = '<h4>' + baseTitle;
                 if (typeof(current) !== 'undefined' && current !== 'undefined') title += ': <B class="graphcurrent' + idx + '">' + current + ' ' + label + '</B>';
                 title += '</h4>';
 
                 var html = '<div class="graph' + (popup ? 'popup' : '')  + '" id="graph' + idx + '">';
-                html += '<div class="transbg col-xs-12">';
-                html += title + '<br /><div style="margin-left:15px;">' + buttons + '</div><br /><div id="graphoutput' + idx + '"></div>';
+
+                var width = 12;
+                if(blocksConfig && typeof(blocksConfig['width']) !== 'undefined' && !popup) {
+                    width = blocksConfig['width'];
+                }
+
+                html += '<div class="transbg col-xs-' + width + '">';
+                html += title + '<br /><div style="margin-left:15px;">' + buttons + '</div><br /><div ' + (popup ? 'class="graphheight" ':'') +  'id="graphoutput' + idx + '"></div>';
                 html += '</div>';
                 html += '</div>';
 
@@ -196,6 +229,10 @@ function showGraph(idx, title, label, range, current, forced, sensor, popup) {
                 $('.block_graph' + (popup ? 'popup' : '') + '_' + idx).html(html);
 
                 var graphProperties = getGraphProperties(data.result[0], label);
+                if (blocksConfig && typeof(blocksConfig['graphTypes']) !== 'undefined') {
+                    graphProperties.keys = blocksConfig['graphTypes'];
+                }
+
                 graphProperties.dateFormat = settings['shorttime'];
                 if (range === 'month' || range === 'year') {
                     graphProperties.dateFormat = settings['shortdate'];
