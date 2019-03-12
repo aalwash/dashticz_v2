@@ -36,27 +36,27 @@ Config params
 
 domoticz_ip
 -----------
-String. Default: ''
+``String`` Default: ''
 
 IP Address and Portnumber of your Domoticz installation
 
 
 user_name
 ---------
-String. Default ''
+``String`` Default ''
 
 Domoticz username
 
 pass_word
 ---------
-String. Default ''
+``String`` Default ''
 
 Domoticz password
 
 
 loginEnabled
 ------------
-Integer. Default 0
+``Number`` Default 0
 Possible values: 0 or 1
 
 Enable if you want a login form to dashticz
