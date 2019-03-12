@@ -59,3 +59,5 @@ Example of CONFIG.js:
     config['domoticz_ip'] = 'http://192.168.1.3:8084';
     config['domoticz_refresh'] = '5';
     config['dashticz_refresh'] = '60';
+
+You can read more about the connection configurtion :ref:`config-connection`.
