@@ -9,7 +9,8 @@ This file you can find in the subfolder ``[dashticz]/custom``.
 In the following part, the ``CONFIG.js`` is divided in sections. For each section there will be an explanation how to use.
 
 Connection
-###############################
+##########
+Below the basic configuration to make the connection with Domoticz work.
 
 .. code-block:: bash
 
@@ -29,3 +30,33 @@ config['domoticz_ip']             is the URL to your Domoticz installation (with
 config['domoticz_refresh']        the refresh rate of Dashticz v2.0 to get information from Domoticz
 config['dashticz_refresh']        the refresh rate of the Dashticz v2.0 Dashboard
 ==========================        =============
+
+Config params
+#############
+
+domoticz_ip
+-----------
+String. Default: ''
+
+IP Address and Portnumber of your Domoticz installation
+
+
+user_name
+---------
+String. Default ''
+
+Domoticz username
+
+pass_word
+---------
+String. Default ''
+
+Domoticz password
+
+
+loginEnabled
+------------
+Integer. Default 0
+Possible values: 0 or 1
+
+Enable if you want a login form to dashticz
