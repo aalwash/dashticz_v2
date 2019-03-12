@@ -8,6 +8,8 @@ This file you can find in the subfolder ``[dashticz]/custom``.
 
 In the following part, the ``CONFIG.js`` is divided in sections. For each section there will be an explanation how to use.
 
+    .. _config-connection:
+
 Connection
 ##########
 Below the basic configuration to make the connection with Domoticz work.
